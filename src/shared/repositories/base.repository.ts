@@ -9,20 +9,20 @@ import {
   Repository,
 } from 'typeorm';
 import { PaginationParams } from '../interfaces/pagination.interface';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export abstract class BaseRepository<T extends BaseEntity>
   implements IBaseRepository<T>
 {
   protected constructor(protected readonly _repository: Repository<T>) {}
 
-  delete(id: string, manager = this._repository.manager): Promise<T> {
-    return this.update(
-      id,
-      {
-        active: false,
-      },
-      manager,
-    );
+  async delete(id: string, manager = this._repository.manager): Promise<T> {
+    await manager.update<BaseEntity>(this._repository.target, id, {
+      isActive: false,
+    });
+    return manager.findOne(this._repository.target, {
+      where: { id },
+    } as FindOneOptions);
   }
 
   find(
@@ -89,7 +89,7 @@ export abstract class BaseRepository<T extends BaseEntity>
 
   async update(
     id: string,
-    data: any,
+    data: QueryDeepPartialEntity<T>,
     manager = this._repository.manager,
   ): Promise<T> {
     await manager.update(this._repository.target, id, data);
