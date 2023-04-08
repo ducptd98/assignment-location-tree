@@ -17,7 +17,7 @@ export class LocationEntity extends BaseEntity {
 
   @Column({
     name: 'number',
-    type: 'ltree',
+    type: 'varchar',
   })
   number: string;
 
@@ -26,4 +26,10 @@ export class LocationEntity extends BaseEntity {
     type: 'real',
   })
   area: number;
+
+  @Column({
+    name: 'path',
+    type: 'ltree',
+  })
+  path: string;
 }

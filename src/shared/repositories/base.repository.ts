@@ -10,13 +10,20 @@ import {
 } from 'typeorm';
 import { PaginationParams } from '../interfaces/pagination.interface';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { handleError } from '../errors/handler-error';
+import { ErrorCode } from '../errors/error-code.enum';
+import { HttpStatus } from '@nestjs/common';
+import { TransactionManager } from '../database/services/transaction-manager';
 
 export abstract class BaseRepository<T extends BaseEntity>
   implements IBaseRepository<T>
 {
   protected constructor(protected readonly _repository: Repository<T>) {}
 
-  async delete(id: string, manager = this._repository.manager): Promise<T> {
+  async delete(
+    id: string,
+    manager: TransactionManager = this._repository.manager,
+  ): Promise<T> {
     await manager.update<BaseEntity>(this._repository.target, id, {
       isActive: false,
     });
@@ -27,7 +34,7 @@ export abstract class BaseRepository<T extends BaseEntity>
 
   find(
     params: FindManyOptions<T>,
-    manager = this._repository.manager,
+    manager: TransactionManager = this._repository.manager,
   ): Promise<T[]> {
     return manager.find(this._repository.target, params);
   }
@@ -35,7 +42,7 @@ export abstract class BaseRepository<T extends BaseEntity>
   findAndCount(
     params?: PaginationParams,
     relations: string[] = [],
-    manager = this._repository.manager,
+    manager: TransactionManager = this._repository.manager,
   ): Promise<[T[], number]> {
     let paginator;
     if (params?.pageIndex && params?.pageSize) {
@@ -69,20 +76,23 @@ export abstract class BaseRepository<T extends BaseEntity>
   findById(
     id: string,
     relations: string[] = [],
-    manager = this._repository.manager,
+    manager: TransactionManager = this._repository.manager,
   ): Promise<T> {
     const relationOptions: FindOneOptions = this.getRelations(relations);
     relationOptions.where = { id };
     return manager.findOne(this._repository.target, relationOptions);
   }
 
-  save(data: DeepPartial<T>, manager = this._repository.manager): Promise<T> {
+  save(
+    data: DeepPartial<T>,
+    manager: TransactionManager = this._repository.manager,
+  ): Promise<T> {
     return manager.save(this._repository.target, data);
   }
 
   saveMany(
     data: DeepPartial<T>[],
-    manager = this._repository.manager,
+    manager: TransactionManager = this._repository.manager,
   ): Promise<T[]> {
     return manager.save(this._repository.target, data);
   }
@@ -92,8 +102,12 @@ export abstract class BaseRepository<T extends BaseEntity>
     data: QueryDeepPartialEntity<T>,
     manager = this._repository.manager,
   ): Promise<T> {
-    await manager.update(this._repository.target, id, data);
-    return this.findById(id, [], manager);
+    const result = await manager.update(this._repository.target, id, data);
+    if (result.affected !== 0) {
+      return this.findById(id);
+    } else {
+      handleError('Not found', ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
   }
 
   protected getRelations(relations: string[] = []) {

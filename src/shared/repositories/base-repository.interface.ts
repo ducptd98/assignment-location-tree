@@ -1,5 +1,6 @@
 import { DeepPartial, EntityManager, FindManyOptions } from 'typeorm';
 import { PaginationParams } from '../interfaces/pagination.interface';
+import { TransactionManager } from '../database/services/transaction-manager';
 
 export interface IBaseRepository<T> {
   find(params: FindManyOptions<T>, manager?: EntityManager): Promise<T[]>;
@@ -7,26 +8,26 @@ export interface IBaseRepository<T> {
   findAndCount(
     pagination?: PaginationParams,
     relations?: string[],
-    manager?: EntityManager,
+    manager?: TransactionManager,
   ): Promise<[T[], number]>;
 
   findById(
     id: string,
     relations: string[],
-    manager?: EntityManager,
+    manager?: TransactionManager,
   ): Promise<T>;
 
   findByIds(
     ids: string[],
     relations: string[],
-    manager?: EntityManager,
+    manager?: TransactionManager,
   ): Promise<T[]>;
 
-  save(data: DeepPartial<T>, manager?: EntityManager): Promise<T>;
+  save(data: DeepPartial<T>, manager?: TransactionManager): Promise<T>;
 
-  saveMany(data: DeepPartial<T>[], manager?: EntityManager): Promise<T[]>;
+  saveMany(data: DeepPartial<T>[], manager?: TransactionManager): Promise<T[]>;
 
-  update(id: string, data: any, manager?: EntityManager): Promise<T>;
+  update(id: string, data: any, manager?: TransactionManager): Promise<T>;
 
-  delete(id: string, manager?: EntityManager): Promise<T>;
+  delete(id: string, manager?: TransactionManager): Promise<T>;
 }
