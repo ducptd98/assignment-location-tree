@@ -20,12 +20,11 @@ export class PgModule {
           imports: [EnvironmentModule],
           useFactory: (environmentService: EnvironmentService) => {
             const pgService = new PgService(environmentService);
-            const configTypeorm = pgService.getTypeOrmConfig({
-              entities: config.entities,
-            });
 
             return {
-              ...configTypeorm,
+              ...pgService.getTypeOrmConfig({
+                entities: config.entities,
+              }),
               autoLoadEntities: true,
             } as TypeOrmModuleOptions;
           },
