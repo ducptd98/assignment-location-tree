@@ -8,13 +8,14 @@ import {
   Post,
 } from '@nestjs/common';
 import { LocationService } from '../services/location.service';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from '../../../shared/dto/pagination.dto';
 import { CreateLocationDto } from '../dto/create-location.dto';
 import { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationDto } from '../dto/location.dto';
 
 @Controller('locations')
+@ApiTags('Location')
 export class LocationController {
   constructor(private _locationService: LocationService) {}
 
