@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { EnvironmentService } from '../../environment/environment.service';
 import { PgConstants } from '../constants/pg.constant';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PgService {
@@ -17,17 +17,6 @@ export class PgService {
       database: this.environmentService.getKey(PgConstants.POSTGRES_DATABASE),
     };
 
-    if (this.environmentService.isTestMode()) {
-      return {
-        type: 'sqlite',
-        database: 'test.db',
-        dropSchema: true,
-        entities: config.entities,
-        synchronize: true,
-        logging: false,
-      };
-    }
-
     return {
       type: PgConstants.POSTGRES,
       ...connection,
@@ -37,12 +26,6 @@ export class PgService {
       migrationsTableName: PgConstants.TYPE_ORM_MIGRATION_TABLE_NAME,
 
       migrations: [PgConstants.TYPE_ORM_MIGRATIONS],
-
-      //TypeOrm 3.0 no longer support this, run command below straight in the cli instead
-      // typeorm migration:create src/migrations
-      // cli: {
-      //   migrationsDir: PgConstants.TYPE_ORM_CLI_MIGRATIONS_DIR,
-      // },
       extra: {
         max: 100,
       },

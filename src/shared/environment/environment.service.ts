@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import dotenv from 'dotenv';
-import fs from 'fs';
+import { parse } from 'dotenv';
+import { readFileSync } from 'fs';
 import { EnvironmentConstants } from './constants/environment.constant';
 
 @Injectable()
@@ -8,8 +8,8 @@ export class EnvironmentService {
   private readonly settings: { [key: string]: string };
 
   constructor() {
-    this.settings = dotenv.parse(
-      fs.readFileSync(
+    this.settings = parse(
+      readFileSync(
         this.isDevMode()
           ? EnvironmentConstants.DEV_ENV_CONFIG_PATH
           : EnvironmentConstants.ENV_CONFIG_PATH,
