@@ -7,13 +7,23 @@ import { LocationEntity } from '../entities/location.entity';
 import { handleError } from '../../../shared/errors/handler-error';
 import { ErrorCode } from '../../../shared/errors/error-code.enum';
 import { UpdateLocationByLocationNumberDto } from '../dto/update-location-by-location-number.dto';
+import { FilterLocationDto } from '../dto/filter-location.dto';
 
 @Injectable()
 export class LocationService {
   constructor(private _locationRepository: LocationRepository) {}
 
-  public async getAll(): Promise<Pagination<LocationEntity>> {
+  public async getAll(
+    filter: FilterLocationDto,
+  ): Promise<Pagination<LocationEntity>> {
     const [items, total] = await this._locationRepository.findAndCount();
+    if (filter?.isGroup) {
+      const results = items;
+      return {
+        items: results,
+        total,
+      };
+    }
     return {
       items,
       total,

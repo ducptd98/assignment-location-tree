@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { LocationService } from '../services/location.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { CreateLocationDto } from '../dto/create-location.dto';
 import { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationDto } from '../dto/location.dto';
 import { UpdateLocationByLocationNumberDto } from '../dto/update-location-by-location-number.dto';
+import { FilterLocationDto } from '../dto/filter-location.dto';
 
 @Controller('locations')
 @ApiTags('Location')
@@ -22,8 +24,8 @@ export class LocationController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Ok', type: PaginationDto })
-  async getAll() {
-    return this._locationService.getAll();
+  async getAll(@Query() filter: FilterLocationDto) {
+    return this._locationService.getAll(filter);
   }
 
   @Post()
@@ -35,7 +37,7 @@ export class LocationController {
   @Patch(':number/update')
   @ApiResponse({ status: 200, description: 'Ok', type: LocationDto })
   async updateOneByLocationNumber(
-    @Param() number: string,
+    @Param('number') number: string,
     @Body() input: UpdateLocationByLocationNumberDto,
   ) {
     return this._locationService.updateOneByNumber(number, input);
@@ -43,13 +45,13 @@ export class LocationController {
 
   @Patch(':id')
   @ApiResponse({ status: 200, description: 'Ok', type: LocationDto })
-  async updateOne(@Param() id: string, @Body() input: UpdateLocationDto) {
+  async updateOne(@Param('id') id: string, @Body() input: UpdateLocationDto) {
     return this._locationService.updateOneById(id, input);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Ok', type: LocationDto })
-  async deleteOne(@Param() id: string) {
+  async deleteOne(@Param('id') id: string) {
     return this._locationService.deleteOne(id);
   }
 }

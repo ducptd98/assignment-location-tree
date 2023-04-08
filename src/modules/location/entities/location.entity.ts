@@ -1,7 +1,9 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '../../../shared/entities/base.entity';
 
 @Entity('location')
+@Index('path_unique', ['path'], { unique: true })
+@Index('number_unique', ['number'], { unique: true })
 export class LocationEntity extends BaseEntity {
   @Column({
     name: 'building',
