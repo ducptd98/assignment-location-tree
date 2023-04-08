@@ -10,6 +10,13 @@ export class CreateLocationDto {
   building: string;
 
   @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    type: 'string',
+  })
+  name: string;
+
+  @IsNotEmpty()
   @IsNumber()
   @ApiProperty({
     type: 'number',
