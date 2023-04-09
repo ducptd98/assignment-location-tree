@@ -6,6 +6,7 @@ import { LocationRepository } from '../repositories/location.repository';
 import { LocationEntity } from '../entities/location.entity';
 import { handleError } from '../../../shared/errors/handler-error';
 import { ErrorCode } from '../../../shared/errors/error-code.enum';
+import { LocationDto } from '../dto/location.dto';
 
 @Injectable()
 export class LocationService {
@@ -13,7 +14,7 @@ export class LocationService {
   private readonly _defaultSeparator = '-';
   constructor(private _locationRepository: LocationRepository) {}
 
-  public async getAll(): Promise<Pagination<LocationEntity>> {
+  public async getAll(): Promise<Pagination<LocationDto>> {
     const [locations, total] = await this._locationRepository.getAll();
     const mapIdAndCode = new Map<string, string>(
       locations.map((item) => [item.id, item.code]),
@@ -32,7 +33,7 @@ export class LocationService {
       return {
         ...location,
         number: number ? `${location.building}-${number}` : null,
-      };
+      } as LocationDto;
     });
     return {
       items: result,

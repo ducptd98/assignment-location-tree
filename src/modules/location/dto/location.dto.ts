@@ -24,5 +24,10 @@ export class LocationDto {
   @ApiProperty({
     type: 'string',
   })
+  number: string;
+
+  @ApiProperty({
+    type: 'string',
+  })
   parentId: string;
 }
