@@ -10,11 +10,12 @@ import { LocationDto } from '../dto/location.dto';
 
 @Injectable()
 export class LocationService {
-  private readonly _defaultSeparatorFromDb = '.';
+  private readonly _defaultSeparatorFromDb = '.'; // Default separator for materialized path
   private readonly _defaultSeparator = '-';
   constructor(private _locationRepository: LocationRepository) {}
 
   public async getAll(): Promise<Pagination<LocationDto>> {
+    const items = await this._locationRepository.getTrees();
     const [locations, total] = await this._locationRepository.getAll();
     const mapIdAndCode = new Map<string, string>(
       locations.map((item) => [item.id, item.code]),
@@ -24,11 +25,7 @@ export class LocationService {
       const path = location.path;
       delete location.path;
       const number = path
-        ? path
-            .split(this._defaultSeparatorFromDb)
-            .filter((id) => !!id)
-            .map((id) => mapIdAndCode.get(id))
-            .join(this._defaultSeparator)
+        ? this._mapToLocationNumber(path, mapIdAndCode)
         : null;
       return {
         ...location,
@@ -85,5 +82,16 @@ export class LocationService {
       return;
     }
     return location;
+  }
+
+  private _mapToLocationNumber(
+    path: string,
+    mapIdAndCode: Map<string, string>,
+  ) {
+    return path
+      .split(this._defaultSeparatorFromDb)
+      .filter((id) => !!id)
+      .map((id) => mapIdAndCode.get(id))
+      .join(this._defaultSeparator);
   }
 }

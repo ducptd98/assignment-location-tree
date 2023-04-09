@@ -27,6 +27,10 @@ export class LocationRepository extends BaseRepository<LocationEntity> {
     return query.getManyAndCount();
   }
 
+  public async getTrees(): Promise<LocationEntity[]> {
+    return this._treeRepository.findTrees();
+  }
+
   public async updateOne(
     id: string,
     input: Partial<LocationEntity>,
