@@ -1,9 +1,15 @@
-import { Column, Entity, Index } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
+} from 'typeorm';
 import { BaseEntity } from '../../../shared/entities/base.entity';
 
 @Entity('location')
-@Index('path_unique', ['path'], { unique: true })
-@Index('number_unique', ['number'], { unique: true })
+@Tree('materialized-path')
 export class LocationEntity extends BaseEntity {
   @Column({
     name: 'building',
@@ -18,10 +24,10 @@ export class LocationEntity extends BaseEntity {
   name: string;
 
   @Column({
-    name: 'number',
+    name: 'code',
     type: 'varchar',
   })
-  number: string;
+  code: string;
 
   @Column({
     name: 'area',
@@ -30,8 +36,24 @@ export class LocationEntity extends BaseEntity {
   area: number;
 
   @Column({
-    name: 'path',
-    type: 'ltree',
+    name: 'parent_id',
+    type: 'uuid',
+    nullable: true,
+  })
+  parentId: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'mpath',
+    update: false,
+    insert: false,
   })
   path: string;
+
+  @TreeParent({ onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'parent_id' })
+  parent: LocationEntity;
+
+  @TreeChildren()
+  children: LocationEntity[];
 }

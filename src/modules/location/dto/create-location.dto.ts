@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLocationDto {
@@ -28,5 +34,12 @@ export class CreateLocationDto {
   @ApiProperty({
     type: 'string',
   })
-  number: string;
+  code: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiProperty({
+    type: 'string',
+  })
+  parentId: string;
 }

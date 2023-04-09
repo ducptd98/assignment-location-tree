@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString, ValidateIf } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateIf,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateLocationDto {
@@ -15,6 +22,7 @@ export class UpdateLocationDto {
   @ApiProperty({
     type: 'string',
   })
+  @ValidateIf((_, value) => value !== undefined)
   name: string;
 
   @IsNotEmpty()
@@ -31,5 +39,12 @@ export class UpdateLocationDto {
     type: 'string',
   })
   @ValidateIf((_, value) => value !== undefined)
-  number: string;
+  code: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiProperty({
+    type: 'string',
+  })
+  parentId: string;
 }
