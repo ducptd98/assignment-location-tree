@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import { LocationService } from '../services/location.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,7 +14,6 @@ import { CreateLocationDto } from '../dto/create-location.dto';
 import { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationDto } from '../dto/location.dto';
 import { UpdateLocationByLocationNumberDto } from '../dto/update-location-by-location-number.dto';
-import { FilterLocationDto } from '../dto/filter-location.dto';
 
 @Controller('locations')
 @ApiTags('Location')
@@ -24,8 +22,8 @@ export class LocationController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Ok', type: PaginationDto })
-  async getAll(@Query() filter: FilterLocationDto) {
-    return this._locationService.getAll(filter);
+  async getAll() {
+    return this._locationService.getAll();
   }
 
   @Post()

@@ -55,6 +55,7 @@ export class LocationRepository extends BaseRepository<LocationEntity> {
     path: string,
     manager: TransactionManager = this.repository.manager,
   ) {
+    // Delete all descendant
     return manager.query(`DELETE FROM "location" WHERE '${path}' @> path`);
   }
 }
