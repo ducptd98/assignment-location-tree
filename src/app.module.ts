@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PgModule } from './shared/database/pg.module';
-import { LocationModule } from './modules/location/location.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { LocationModule } from './modules/location/location.module';
 
 @Module({
   imports: [

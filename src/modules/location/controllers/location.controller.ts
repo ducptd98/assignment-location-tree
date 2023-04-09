@@ -13,9 +13,8 @@ import { PaginationDto } from '../../../shared/dto/pagination.dto';
 import { CreateLocationDto } from '../dto/create-location.dto';
 import { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationDto } from '../dto/location.dto';
-import { UpdateLocationByLocationNumberDto } from '../dto/update-location-by-location-number.dto';
 
-@Controller('locations')
+@Controller('v1/locations')
 @ApiTags('Location')
 export class LocationController {
   constructor(private _locationService: LocationService) {}
@@ -30,15 +29,6 @@ export class LocationController {
   @ApiResponse({ status: 200, description: 'Ok', type: LocationDto })
   async createOne(@Body() input: CreateLocationDto) {
     return this._locationService.createOne(input);
-  }
-
-  @Patch(':number/update')
-  @ApiResponse({ status: 200, description: 'Ok', type: LocationDto })
-  async updateOneByLocationNumber(
-    @Param('number') number: string,
-    @Body() input: UpdateLocationByLocationNumberDto,
-  ) {
-    return this._locationService.updateOneByNumber(number, input);
   }
 
   @Patch(':id')

@@ -1,61 +1,46 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, TreeRepository } from 'typeorm';
 import { LocationEntity } from '../entities/location.entity';
-import { Repository } from 'typeorm';
 import { BaseRepository } from '../../../shared/repositories/base.repository';
-import { TransactionManager } from '../../../shared/database/services/transaction-manager';
-import { handleError } from '../../../shared/errors/handler-error';
-import { ErrorCode } from '../../../shared/errors/error-code.enum';
 
 @Injectable()
 export class LocationRepository extends BaseRepository<LocationEntity> {
+  private readonly _alias: string = 'location';
   constructor(
     @InjectRepository(LocationEntity)
-    protected repository: Repository<LocationEntity>,
+    private _treeRepository: TreeRepository<LocationEntity>,
+    @InjectRepository(LocationEntity)
+    protected _repository: Repository<LocationEntity>,
   ) {
-    super(repository);
+    super(_repository);
   }
 
-  public async updateOneByLocationNumber(
-    number: string,
-    input: Partial<LocationEntity>,
-    manager: TransactionManager = this.repository.manager,
-  ) {
-    const result = await manager.update(LocationEntity, { number }, input);
-    if (result.affected !== 0) {
-      return this.findOneByLocationNumber(number, manager);
-    } else {
-      handleError(
-        'Location not found',
-        ErrorCode.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
+  public async getAll(): Promise<[LocationEntity[], number]> {
+    const query = this._repository
+      .createQueryBuilder(this._alias)
+      .select(
+        ['id', 'path', 'name', 'code', 'area', 'building'].map(
+          (field) => `${this._alias}.${field}`,
+        ),
       );
-    }
+    return query.getManyAndCount();
   }
 
-  public async findOneByLocationNumber(
-    number: string,
-    manager: TransactionManager = this.repository.manager,
-  ) {
-    return manager.findOne(LocationEntity, {
-      where: { number },
+  public async updateOne(
+    id: string,
+    input: Partial<LocationEntity>,
+  ): Promise<LocationEntity> {
+    return this._repository.save({
+      id,
+      ...input,
     });
   }
 
-  public async countByLocationNumber(
-    number: string,
-    manager: TransactionManager = this.repository.manager,
-  ) {
-    return manager.count(LocationEntity, {
-      where: { number },
-    });
-  }
-
-  public async removeByLocationNumber(
-    path: string,
-    manager: TransactionManager = this.repository.manager,
-  ) {
+  public async remove(id: string) {
     // Delete all descendant
-    return manager.query(`DELETE FROM "location" WHERE '${path}' @> path`);
+    return this._repository.delete({
+      id,
+    });
   }
 }
