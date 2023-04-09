@@ -4,6 +4,7 @@ import { PgModule } from './shared/database/pg.module';
 import { LocationModule } from './modules/location/location.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { LocationV2Module } from './modules/location-v2/location-v2.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
       entities: [],
     }),
     LocationModule,
+    LocationV2Module,
   ],
   controllers: [AppController],
   providers: [

@@ -15,7 +15,7 @@ import { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationDto } from '../dto/location.dto';
 import { UpdateLocationByLocationNumberDto } from '../dto/update-location-by-location-number.dto';
 
-@Controller('locations')
+@Controller('v1/locations')
 @ApiTags('Location')
 export class LocationController {
   constructor(private _locationService: LocationService) {}
