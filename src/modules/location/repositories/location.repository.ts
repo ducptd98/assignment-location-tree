@@ -35,8 +35,26 @@ export class LocationRepository extends BaseRepository<LocationEntity> {
 
   public async findOneByLocationNumber(
     number: string,
-    mamager: TransactionManager = this.repository.manager,
+    manager: TransactionManager = this.repository.manager,
   ) {
-    return mamager.findOne(LocationEntity, { where: { number } });
+    return manager.findOne(LocationEntity, {
+      where: { number },
+    });
+  }
+
+  public async countByLocationNumber(
+    number: string,
+    manager: TransactionManager = this.repository.manager,
+  ) {
+    return manager.count(LocationEntity, {
+      where: { number },
+    });
+  }
+
+  public async removeByLocationNumber(
+    path: string,
+    manager: TransactionManager = this.repository.manager,
+  ) {
+    return manager.query(`DELETE FROM "location" WHERE '${path}' @> path`);
   }
 }

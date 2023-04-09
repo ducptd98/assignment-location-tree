@@ -30,18 +30,23 @@ export class LocationService {
     };
   }
 
-  public async createOne(input: CreateLocationDto) {
+  public async createOne(input: CreateLocationDto): Promise<LocationEntity> {
     const path = input.number.replace(/-/g, '.');
+    await this._validateExistLocationNumber(input);
     return this._locationRepository.save({
       ...input,
       path,
     });
   }
 
-  public async updateOneById(id: string, input: UpdateLocationDto) {
+  public async updateOneById(
+    id: string,
+    input: UpdateLocationDto,
+  ): Promise<LocationEntity> {
     const toUpdateObject: Partial<LocationEntity> = { ...input };
     const location = await this._getAndValidate(id);
     if (toUpdateObject.number && toUpdateObject.number != location.number) {
+      await this._validateExistLocationNumber(input);
       toUpdateObject.path = input.number.replace(/-/g, '.');
     }
 
@@ -51,16 +56,17 @@ export class LocationService {
   public async updateOneByNumber(
     number: string,
     input: UpdateLocationByLocationNumberDto,
-  ) {
+  ): Promise<LocationEntity> {
     return this._locationRepository.updateOneByLocationNumber(number, input);
   }
 
-  public async deleteOne(id: string) {
-    await this._getAndValidate(id);
-    return this._locationRepository.delete(id);
+  public async deleteOne(id: string): Promise<LocationEntity> {
+    const location = await this._getAndValidate(id);
+    await this._locationRepository.removeByLocationNumber(location.path);
+    return location;
   }
 
-  private async _getAndValidate(id: string) {
+  private async _getAndValidate(id: string): Promise<LocationEntity> {
     const location = await this._locationRepository.findById(id);
     if (!location) {
       handleError(
@@ -71,5 +77,17 @@ export class LocationService {
       return;
     }
     return location;
+  }
+
+  private async _validateExistLocationNumber(input: CreateLocationDto) {
+    const countLocationNumber =
+      await this._locationRepository.countByLocationNumber(input.number);
+    if (countLocationNumber > 0) {
+      handleError(
+        'Exist location number',
+        ErrorCode.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
