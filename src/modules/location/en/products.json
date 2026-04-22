@@ -1,0 +1,9 @@
+{
+  "add.name_label": "Product Name",
+  "add.price_label": "Price",
+  "add.title": "Add Product",
+  "detail.in_stock": "In stock",
+  "detail.out_of_stock": "Out of stock",
+  "list.empty": "No products found.",
+  "list.title": "All Products"
+}
