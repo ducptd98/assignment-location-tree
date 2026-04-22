@@ -1,0 +1,10 @@
+{
+  "buttons.cancel": "Annuler",
+  "buttons.delete": "Supprimer",
+  "buttons.edit": "Modifier",
+  "buttons.save": "Enregistrer",
+  "buttons.search": "Rechercher",
+  "messages.error": "Une erreur est survenue.",
+  "messages.saved": "Modifications enregistrées.",
+  "messages.welcome": "Bon retour !"
+}

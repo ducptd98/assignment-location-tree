@@ -1,0 +1,10 @@
+{
+  "buttons.cancel": "キャンセル",
+  "buttons.delete": "削除",
+  "buttons.edit": "編集",
+  "buttons.save": "保存",
+  "buttons.search": "検索",
+  "messages.error": "エラーが発生しました。",
+  "messages.saved": "変更を保存しました。",
+  "messages.welcome": "おかえりなさい！"
+}

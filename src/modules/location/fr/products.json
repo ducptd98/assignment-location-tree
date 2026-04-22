@@ -1,0 +1,9 @@
+{
+  "add.name_label": "Nom du Produit",
+  "add.price_label": "Prix",
+  "add.title": "Ajouter un Produit",
+  "detail.in_stock": "En stock",
+  "detail.out_of_stock": "Rupture de stock",
+  "list.empty": "Aucun produit trouvé.",
+  "list.title": "Tous les Produits"
+}
