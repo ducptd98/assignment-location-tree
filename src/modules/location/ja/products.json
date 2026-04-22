@@ -1,0 +1,9 @@
+{
+  "add.name_label": "商品名",
+  "add.price_label": "価格",
+  "add.title": "商品追加",
+  "detail.in_stock": "在庫あり",
+  "detail.out_of_stock": "在庫切れ",
+  "list.empty": "商品が見つかりません。",
+  "list.title": "全商品"
+}
